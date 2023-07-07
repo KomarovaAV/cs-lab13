@@ -1,8 +1,8 @@
-﻿#include <iostream>
-#include <vector>  
-#include <iomanip>  
-#include <cmath> 
-#include <string> 
+﻿#include <iostream> 
+#include <vector> 
+#include <iomanip> 
+#include <cmath>
+#include <string>
 
 using namespace std;
 
@@ -36,18 +36,33 @@ size_t find_max_count(const vector<size_t>& bins, const size_t bin_count) {
     return max_count;
 }
 void show_histogram_svg(const vector<size_t>bins) {
-    const auto IMAGE_WIDTH = 800;
-    const auto IMAGE_HEIGHT = 600;
+    const auto IMAGE_WIDTH = 1000;
+    const auto IMAGE_HEIGHT = 500;
     const auto TEXT_LEFT = 20;
     const auto TEXT_BASELINE = 20;
     const auto TEXT_WIDTH = 50;
     const auto BIN_HEIGHT = 30;
     const auto BLOCK_WIDTH = 20;
+    const auto BINS_LIM = 80;
+
+    int max_bin = bins[0];
+    for (size_t bin : bins)
+        if (bin > max_bin)
+            max_bin = bin;
+    bool scaling;
+    if (max_bin > BINS_LIM)
+        scaling = true;
+    else
+        scaling = false;
 
     svg_begin(IMAGE_WIDTH, IMAGE_HEIGHT);
     double top = 0;
     for (size_t bin : bins) {
-        const double bin_width = BLOCK_WIDTH * bin;
+        double bin_width = BLOCK_WIDTH * bin;
+        if (scaling)
+            bin_width = BLOCK_WIDTH * bin / (max_bin / BINS_LIM);
+        else
+            bin_width = BLOCK_WIDTH * bin;
         svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
         svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
         top += BIN_HEIGHT;
